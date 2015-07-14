@@ -8,10 +8,9 @@ class Product_Controller extends FT_Controller {
 		self::$process = '/product/show';
 		self::$object= $this->product;
 	}
-	public function show(){
+	public function show() {
 		$sort=''; $path='?';
 		$this->check_sort($sort,$path);
-		
 		if(!isset($_GET['search'])) {
 			$db = $this->product->getAllProduct('');
 			$pagination = $this->pagination(count($db),'../product/show'.$path);
@@ -22,14 +21,12 @@ class Product_Controller extends FT_Controller {
 			$name = $_GET['context'];
 			if($this->product->search($name)) {
 				$db = $this->product->search($name);
-				// var_dump($db);
-				// die();
 				$pagination = $this->pagination($db->rowCount(),'../product/show'.$path);
 				$pagination['valueSearch'] = $name;
 				$dblimit = $this->product->search($name,$sort,$pagination['page_limit']);
 				$this->view->load('home/main',$dblimit,'product/listProducts',$pagination);
 			} else {
-				$this->view->load('home/main',array(),'product/listProducts',$this->user->getError());
+				$this->view->load('home/main',array(),'product/listProducts',$this->product->getError());
 			}
 		}
 		
@@ -42,7 +39,7 @@ class Product_Controller extends FT_Controller {
 			$data['price'] = $_POST['price'];
 			$data['image'] = $_FILES['file']['name'];
 			$data['activate'] = $_POST['activate'];
-			$data['createdTime'] = $data['updatedTime']= date("Y-m-d H:i:s");
+			$data['createdTime'] = $data['updatedTime'] = date("Y-m-d H:i:s");
 			if(!$this->product->is_nameProduct($data['name'])) {
 				if($this->product->editValidate($data)) {
 					$_SESSION['success'] = 'You added product successful !';
@@ -69,7 +66,6 @@ class Product_Controller extends FT_Controller {
 			$products = $this->product->getId($data['id']);
 			$data['createdTime'] =  $products['createdTime'];
 			$data['image'] = '';
-			$validate = new Validate_Library();
 
 			if(!empty($_FILES['file']['name'])) {
 				if($this->product->editValidate($data)){

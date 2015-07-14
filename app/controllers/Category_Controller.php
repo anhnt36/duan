@@ -11,11 +11,6 @@ class Category_Controller extends FT_Controller {
 	public function show() {
 		$sort=''; $path='?';
 		$this->check_sort($sort,$path);
-		
-		if(isset($_GET['type'])) { 				//Check to sort ASC or DESC
-			$sort=$sort.$_GET['type'];
-			$path=$path.'type='.$_GET['type'].'&';
-		}
 		if(!isset($_GET['search'])) {
 			$db = $this->category->getAllCategory('');
 			$pagination = $this->pagination($db->rowCount(),'../category/show'.$path);
@@ -40,8 +35,8 @@ class Category_Controller extends FT_Controller {
 	*/
 	public function edit() {
 		if(isset($_POST['OK'])) {
-			$data['id']= $_GET['id'];
 			$data['name'] = htmlentities($_POST['name'],ENT_QUOTES);
+			$data['id']= $_GET['id'];
 			$data['activate'] = $_POST['activate'];
 			$data['updatedTime'] = date("Y-m-d H:i:s");
 			$arrayUser = $this->category->getId($data['id']);
@@ -67,7 +62,7 @@ class Category_Controller extends FT_Controller {
 			$data['createdTime'] = $data['updatedTime']= date("Y-m-d H:i:s");
 			
 			if(!$this->category->is_nameCategory($data['name'])) {
-				if($this->category->editValidate($data)){
+				if($this->category->editValidate($data)) {
 					$_SESSION['success'] = 'You added account successful !';
 					$this->category->insert($data) ;
 					header('Location:' . base_url . '/category/show');
@@ -80,4 +75,3 @@ class Category_Controller extends FT_Controller {
 		ob_end_flush();
 	}
 }
-?>

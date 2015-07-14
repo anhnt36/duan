@@ -81,10 +81,13 @@
                         <tbody>
                         <?php
                         foreach ($data as $row) {
-                            if($row['activate']==0){
+
+                            if($row['activate'] == 0){
                                 $row['activate']='Activate';
+
                             } else {
                                 $row['activate']='Deactivate';
+
                             }
                             echo "
                             <tr>

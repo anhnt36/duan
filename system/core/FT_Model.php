@@ -4,6 +4,7 @@ class FT_Model{
 	public static $_table;
 	public static $pdo;
 	public static $field;
+	public static $error=array();
 	public static $message=array(
 		'required'			=> "Field %s isn't be empty !",
 		'min' 				=> "Field %s isn't be less than %d characters !" ,
@@ -56,6 +57,18 @@ class FT_Model{
 			return sprintf(self::$message[$nameRule],$name,$error);
 		}
 	}
+
+	// public function dataValidate($rules=array()){
+	// 	$fieldRule = array_keys($rules);
+	// 	foreach ($fieldRule as $val) {
+	// 		$arrayRule = $this->rules($val);
+	// 		foreach ($rules as $key) {
+	// 			# code...
+	// 		}
+	// 		$value = $this->xrules($val,$rule);
+
+	// 	}
+	// }
 	/*
 		Tìm kiếm id và tên
 	*/
@@ -97,13 +110,14 @@ class FT_Model{
 	public function search($name,$sort='',$limit=''){
 		$db = self::$pdo;
 		$count='';
+		$name = htmlentities($name,ENT_QUOTES);
 		$query= $db->query("SELECT * FROM " . self::$_table . " WHERE name like '%$name%' or id like '%$name%' ".' '.$sort.' '. $limit);
 		$count= $query->rowCount();
 		if($count>0){
 			return $query;
 		}
 		else{
-			self::$error['search']= "Not found !";
+			self::$error['search'] = "Not found !";
 			return false;
 		}
 	}

@@ -97,7 +97,12 @@
                             <div class="clear"></div>
                         </div>                          
                         <div class="row-form">
-                        	<button class="btn btn-success" type="submit" name="OK" value="submit">Create</button>
+                        	<button class="btn btn-success" type="submit" name="OK" value="submit">
+                            <?php 
+                                if(isset($_GET['id'])) echo 'Edit';
+                                else echo 'Create';
+                            ?>   
+                            </button>
 							<div class="clear"></div>
                         </div>
                     </form>

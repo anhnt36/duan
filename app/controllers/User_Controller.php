@@ -86,7 +86,7 @@ class User_Controller extends FT_Controller {
 			if(empty($_POST['pass'])) $data['password'] = $arrayUser['password']; 
 			else $data['password'] = $_POST['pass'];
 			$data['avatar'] = '';
-			if($_FILES['file']['name']!='') {
+			if($_FILES['file']['name'] != '') {
 				if($this->user->editValidate($data)){
 					$_SESSION['success'] = 'You edited account successful !';
 					$data['avatar'] = $_FILES['file']['name'];
@@ -94,8 +94,9 @@ class User_Controller extends FT_Controller {
 					header('Location:' . base_url . '/user/show');
 				}
 			} else {
-				if(isset($_POST['img']) && $_POST['img']=='1') $data['avatar']='';
+				if(isset($_POST['img']) && $_POST['img'] == '1') $data['avatar'] = '';
 				else $data['avatar'] = $arrayUser['avatar'];
+				
 				if($this->user->editValidate($data)) {
 					$_SESSION['success'] = 'You edited account successful !';
 					$this->user->update($data['id'],$data);
@@ -104,12 +105,12 @@ class User_Controller extends FT_Controller {
 			}
 			$this->view->load('home/main',$data,'home/addUser',$this->user->getError());
 		} else {
-			$data=$this->user->getId($_GET['id']);
+			$data = $this->user->getId($_GET['id']);
 			$this->view->load('home/main',$data,'home/addUser');
 		}
 	}
 	/*
-		Add User
+						Add User
 	*/
 	public function add() {
 		ob_start(); 

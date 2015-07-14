@@ -8,9 +8,10 @@ class User_Model extends FT_Model {
 		parent::__construct();
 		self::$_table = 'user';
 		self::$rules = array(
-		'username' => 	'required|min:4',
-		'password' => 	'required|min:4',
-		'email'		=>  'required|email');
+				'username' => 	'required|min:4',
+				'password' => 	'required|min:4',
+				'email'		=>  'required|email'
+		);
 		self::$field= array('name','password','email','avatar','activate','createdTime','updatedTime');
 	}
 	/*

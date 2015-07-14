@@ -49,7 +49,7 @@
 
     <ul class="navigation">
         <li>
-            <a href="../categories/insert">
+            <a href="../category/show">
                 <span class="isw-grid"></span><span class="text">Categories</span>
             </a>
         </li>

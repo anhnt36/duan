@@ -9,6 +9,25 @@
     <link rel="icon" type="image/ico" href="favicon.ico"/>
 
     <link href="css/stylesheets.css" rel="stylesheet" type="text/css"/>
+    <link href="<?php echo base_url.'/public/css/pagination.css'; ?> " rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    
+    <script type="text/javascript">
+        $(document).ready(function(){
+                $('#selectAll').on('click',function(){
+                    if ($(this).is(':checked')) {
+                        $('.chkbox').each(function(){
+                            this.checked = true;
+                        });
+                    }else{
+                        $('.chkbox').each(function(){
+                            this.checked = false;
+                        });
+                    }
+                })
+            });
+        
+    </script>
 
 </head>
 <body>
@@ -24,9 +43,10 @@
 
         <div class="row-fluid">
             <div class="span12 search">
-                <form>
-                    <input type="text" class="span11" placeholder="Some text for search..." name="search"/>
-                    <button class="btn span1" type="submit">Search</button>
+                <form method="GET" action="../category/show">
+                    <input type="text" class="span11" placeholder="Some text for search..." name="context" value="<?php if(isset($error['valueSearch'])) echo $error['valueSearch'];?>" />
+                    <button class="btn span1" type="submit" name="search" value="OK" >Search</button>
+                    <p style="color:red"><?php if(isset($error['search'])) echo '* '.$error['search']; ?></p>
                 </form>
             </div>
         </div>
@@ -42,13 +62,16 @@
                     <div class="clear"></div>
                 </div>
                 <div class="block-fluid table-sorting">
-                    <a href="add-category.html" class="btn btn-add">Add Category</a>
+                    <a href="../category/add" class="btn btn-add">Add Category</a>
+                    <p style="color:red" align="center"><?php if(isset($_SESSION['success'])){echo $_SESSION['success']; unset($_SESSION['success']);} ?></p>
+                    <p style="color:red" align="center"><?php if(isset($_SESSION['activate'])){echo $_SESSION['activate']; unset($_SESSION['activate']);} ?></p>
+                    <form method="POST" action="../category/process">
                     <table cellpadding="0" cellspacing="0" width="100%" class="table" id="tSortable_2">
                         <thead>
                         <tr>
-                            <th><input type="checkbox" id="checkAll"/></th>
-                            <th width="15%" class="sorting"><a href="#">ID</a></th>
-                            <th width="35%" class="sorting"><a href="#">Category Name</a></th>
+                            <th><input type="checkbox" id="selectAll"/></th>
+                            <th width="15%" class="sorting"><a href="../category/show?<?php if(isset($_GET['search'])){echo 'context='.$_GET['context'].'&search='.$_GET['search'].'&';} ?>s=id<?php if(isset($_GET['type'])){if($_GET['type']=='DESC'){echo '&type=ASC';}else{echo '&type=DESC';}}else{echo '&type=DESC';}if(isset($_GET['page'])){echo '&page='.$_GET['page'];} ?>">ID</a></th>
+                            <th width="35%" class="sorting"><a href="../category/show?<?php if(isset($_GET['search'])){echo 'context='.$_GET['context'].'&search='.$_GET['search'].'&';} ?>s=name<?php if(isset($_GET['type'])){if($_GET['type']=='DESC'){echo '&type=ASC';}else{echo '&type=DESC';}}else{echo '&type=DESC';}if(isset($_GET['page'])){echo '&page='.$_GET['page'];} ?>">Category Name</a></th>
                             <th width="20%" class="sorting"><a href="#">Activate</a></th>
                             <th width="10%" class="sorting"><a href="#">Time Created</a></th>
                             <th width="10%" class="sorting"><a href="#">Time Updated</a></th>
@@ -56,31 +79,36 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td><input type="checkbox" name="checkbox"/></td>
-                            <td>1</td>
-                            <td>Category 1</td>
-                            <td><span class="text-success">Activated</span></td>
-                            <td>15:00 05/10/2014</td>
-                            <td>15:00 05/10/2014</td>
-                            <td><a href="edit-category.html" class="btn btn-info">Edit</a></td>
-                        </tr>
+                        <?php
+                        foreach ($data as $row) {
+                            if($row['activate']==0){
+                                $row['activate']='Activate';
+                            } else {
+                                $row['activate']='Deactivate';
+                            }
+                            echo "
+                            <tr>
+                                <td><input class='chkbox' type='checkbox' name='c[]' value='{$row['id']}'/></td>
+                                <td>{$row['id']}</td>
+                                <td>{$row['name']}</td>
+                                <td><span class='text-success'>{$row['activate']}</span></td>
+                                <td>{$row['createdTime']}</td>
+                                <td>{$row['updatedTime']}</td>
+                                <td><a href='../category/edit?id={$row['id']}' class='btn btn-info'>Edit</a></td>
+                            </tr>";
+                        }
+                        ?>
                         
                         </tbody>
                     </table>
                     <div class="bulk-action">
-                        <a href="#" class="btn btn-success">Activate</a>
-                        <a href="#" class="btn btn-danger">Delete</a>
+                        <button class="btn btn-success" type="submit" name="activate" value="">Activate</button>
+                        <button class="btn btn-success" type="submit" name="deactivate" value="">Deactivate</button>
+                        <button class="btn btn-danger" type="submit" name="delete" value="">Delete</button>
                     </div><!-- /bulk-action-->
+                    </form>
                     <div class="dataTables_paginate">
-                        <a class="first paginate_button paginate_button_disabled" href="#">First</a>
-                        <a class="previous paginate_button paginate_button_disabled" href="#">Previous</a>
-                        <span>
-                            <a class="paginate_active" href="#">1</a>
-                            <a class="paginate_button" href="#">2</a>
-                        </span>
-                        <a class="next paginate_button" href="#">Next</a>
-                        <a class="last paginate_button" href="#">Last</a>
+                        <?php if(isset($error['page_links']))  if(!empty($error['page_links']))  echo  $error['page_links']; ?>
                     </div>
                     <div class="clear"></div>
                 </div>

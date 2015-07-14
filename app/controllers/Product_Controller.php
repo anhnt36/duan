@@ -5,24 +5,13 @@ class Product_Controller extends FT_Controller {
 		FT_Controller::__construct();
 		$this->model->load('Product');
 		$this->product= new Product_Model();
-
+		self::$process = '/product/show';
+		self::$object= $this->product;
 	}
 	public function show(){
 		$sort=''; $path='?';
-		if(isset($_GET['s'])) { //			Check to sort follow id and name
-			if($_GET['s']=='id') {
-				$sort = "order by id ";
-				$path = '?s=id&';
-			}
-			if($_GET['s']=='name') {
-				$sort="order by name ";
-				$path='?s=name&';
-			}
-		}
-		if(isset($_GET['type'])) { 				//Check to sort ASC or DESC
-			$sort=$sort.$_GET['type'];
-			$path=$path.'type='.$_GET['type'].'&';
-		}
+		$this->check_sort($sort,$path);
+		
 		if(!isset($_GET['search'])) {
 			$db = $this->product->getAllProduct('');
 			$pagination = $this->pagination(count($db),'../product/show'.$path);
@@ -106,34 +95,5 @@ class Product_Controller extends FT_Controller {
 			$data=$this->product->getId($_GET['id']);
 			$this->view->load('home/main',$data,'product/addProduct');
 		}
-	}
-
-	public function process() {
-		if(isset($_POST['activate'])) {
-			if(!empty($_POST['c'])) {
-				$act= $_POST['c'];
-				foreach ($act as $val) {
-					$this->product->act($val,'1');
-				}
-			} else {$_SESSION['activate'] = 'Please ! Click checkbox ';}
-		}
-		if(isset($_POST['deactivate'])) {
-			if(!empty($_POST['c'])) {
-				$act= $_POST['c'];
-				foreach ($act as $val) {
-					$this->product->act($val,'0');
-				}
-			} else {$_SESSION['activate'] = 'Please ! Click checkbox ';}
-		}
-		if(isset($_POST['delete'])) {
-			if(!empty($_POST['c'])) {
-				$del= $_POST['c'];
-				$add= 'left join productimage on product.id=productimage.id_product';
-				foreach ($del as $val) {
-					$this->product->delete($val,$add,'product.');
-				}
-			} else {$_SESSION['activate'] = 'Please ! Click checkbox ';}
-		}
-		header("Location:".base_url."/product/show");
 	}
 }

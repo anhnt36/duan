@@ -53,8 +53,7 @@ class User_Model extends FT_Model {
 		if(in_array('required',$nameRule)){
 			if(empty($name)){
 				self::$error['name'] = $this->ruleMessage('username','required');
-			}
-			else{
+			} else{
 				if(in_array('min', $nameRule)) {
 					if(strlen($name)<$this->xrules('username','min',self::$rules)) {
 						self::$error['name'] = $this->ruleMessage('username','min');
@@ -67,8 +66,7 @@ class User_Model extends FT_Model {
 		if(in_array('required',$passRule)) {
 			if(empty($pass)) {
 				self::$error['pass']= $this->ruleMessage('password','required');
-			}
-			else{
+			} else{
 				if(in_array('min', $passRule)) {
 					if(strlen($pass)<$this->xrules('password','min',self::$rules)) {
 						self::$error['pass']= $this->ruleMessage('password','min');
@@ -80,8 +78,7 @@ class User_Model extends FT_Model {
 		if(in_array('required',$emailRule)) {
 			if(empty($email)) {
 				self::$error['email']= $this->ruleMessage('email','required');
-			}
-			else {
+			} else {
 				if(in_array('email', $emailRule)) {
 					if(!filter_var($email,FILTER_VALIDATE_EMAIL)) {
 						self::$error['email'] = $this->ruleMessage('email','email');
@@ -103,9 +100,7 @@ class User_Model extends FT_Model {
 			if(!empty(self::$error['name']) || !empty(self::$error['pass'])) {
 				return false;
 			} else return true;
-		}
-		else return true;
-
+		} else return true;
 	}
 	/*
 		Validate Edit
@@ -121,16 +116,8 @@ class User_Model extends FT_Model {
 			if(isset(self::$error['name']) || isset(self::$error['pass']) ||  isset(self::$error['email']) ||  isset(self::$error['file']) ) {
 				if(!empty(self::$error['name']) || !empty(self::$error['pass']) || !empty(self::$error['email'])  || !empty(self::$error['file'])) {
 					return false;
-				}
-				else return true;
-			}
-			else return true;
+				} else return true;
+			} else return true;
 		} 
-		// else {
-		// 	self::$error['name'] = $this->ruleMessage('username','required');
-		// 	self::$error['pass'] = $this->ruleMessage('password','required');
-		// 	self::$error['email'] = $this->ruleMessage('email','required');
-		// 	return false;
-		// }
 	}
 }

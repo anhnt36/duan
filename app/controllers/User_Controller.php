@@ -5,7 +5,8 @@ class User_Controller extends FT_Controller {
 		FT_Controller::__construct();
 		$this->model->load('User');
 		$this->user= new User_Model;
-		
+		self::$process = '/user/show';
+		self::$object= $this->user;
 	}
 	/*
 						Login system	
@@ -50,20 +51,7 @@ class User_Controller extends FT_Controller {
 	*/
 	public function show() {
 		$sort=''; $path='?';
-		if(isset($_GET['s'])) { //			Check to sort follow id and name
-			if($_GET['s']=='id') {
-				$sort = "order by id ";
-				$path = '?s=id&';
-			}
-			if($_GET['s']=='name') {
-				$sort="order by name ";
-				$path='?s=name&';
-			}
-		}
-		if(isset($_GET['type'])) { 				//Check to sort ASC or DESC
-			$sort=$sort.$_GET['type'];
-			$path=$path.'type='.$_GET['type'].'&';
-		}
+		$this->check_sort($sort,$path);
 		if(!isset($_GET['search'])) {
 			$db = $this->user->getAllUser('');
 			$pagination = $this->pagination($db->rowCount(),'../user/show'.$path);
@@ -146,35 +134,4 @@ class User_Controller extends FT_Controller {
 		}
 		ob_end_flush();
 	}
-	/*
-		Activate ,Deactivate and Delete
-	*/
-	public function process() {
-		if(isset($_POST['activate'])) {
-			if(!empty($_POST['c'])) {
-				$act= $_POST['c'];
-				foreach ($act as $val) {
-					$this->user->act($val,'1');
-				}
-			} else {$_SESSION['activate'] = 'Please ! Click checkbox ';}
-		}
-		if(isset($_POST['deactivate'])) {
-			if(!empty($_POST['c'])) {
-				$act= $_POST['c'];
-				foreach ($act as $val) {
-					$this->user->act($val,'0');
-				}
-			} else {$_SESSION['activate'] = 'Please ! Click checkbox ';}
-		}
-		if(isset($_POST['delete'])) {
-			if(!empty($_POST['c'])) {
-				$del= $_POST['c'];
-				foreach ($del as $val) {
-					$this->user->delete($val);
-				}
-			} else {$_SESSION['activate'] = 'Please ! Click checkbox ';}
-		}
-		header("Location:".base_url."/user/show");
-	}
 }
-?>

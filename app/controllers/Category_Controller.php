@@ -8,9 +8,10 @@ class Category_Controller extends FT_Controller {
 		self::$process = '/category/show';
 		self::$object= $this->category;
 	}
-
-
-
+	
+	/*
+		Show data
+	*/
 	public function show() {
 		$sort=''; $path='?';
 		$this->check_sort($sort,$path);

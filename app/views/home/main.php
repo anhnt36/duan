@@ -36,13 +36,18 @@
             ?>
         </div>
     </div>
-
+    <?php
+            // echo base_url.'/public/img/users/avatar.jpg';
+            // echo base_url.'/public/img/'.$_SESSION['avatar'];
+        ?>
     <div class="admin">
         <div class="image">
+        
             <img src="
             <?php 
-            if(!empty($_SESSION['avatar']))
-                echo base_url.'/public/img/'.$_SESSION['avatar'];
+            
+            
+            if(!empty($_SESSION['avatar'])) echo base_url.'/public/img/'.$_SESSION['avatar'];
             else echo base_url.'/public/img/users/avatar.jpg';
             ?>
 

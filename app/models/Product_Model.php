@@ -10,17 +10,23 @@ class Product_Model extends FT_Model {
 		);
 		self::$field= array('name','description','price','activate','createdTime','updatedTime');
 	}
-
+	/*
+		Return errors array
+	*/
 	public function getError() {
 		return self::$error;
 	}
-
+	/*
+		Return all products
+	*/
 	public function getAllProduct($limit = '',$sort = '') {
-		$dbh = self::$pdo->query("SELECT product.* FROM " . self::$_table.' '.$sort.' '. $limit);
+		$dbh = self::$pdo->query("SELECT * FROM " . self::$_table.' '.$sort.' '. $limit);
 		$query = $dbh->fetchAll();
 		return $query;
 	}
-
+	/*
+		Do nameProduct have in database ?
+	*/
 	public function is_nameProduct($name){
 		$query = self::$pdo->query("select * from product where name='{$name}'");
 		$count = $query->rowCount();
@@ -31,15 +37,21 @@ class Product_Model extends FT_Model {
 		}
 		else return false;
 	}
-
+	/*
+		Insert image into database
+	*/
 	public function insertImage($image,$parentId) {
 		$query=self::$pdo->query("INSERT INTO image (image,parentId) VALUES ('{$image}','{$parentId}')");
 	}
-
+	/*
+		Update image into database
+	*/
 	public function updateImage($image,$parentId) {
 		$query=self::$pdo->query("UPDATE image SET image= '$image' where parentId='{$parentId}'");
 	}
-
+	/*
+		Product valid or invalid
+	*/
 	public function checkProduct($name,$price) {
 		$nameRule = $this->rules('name',self::$rules);
 		if(in_array('required',$nameRule))
@@ -60,18 +72,24 @@ class Product_Model extends FT_Model {
 			}
 		}
 	}
-
+	/*
+		Delete product follow id 
+	*/
 	public function delete($id) {
 		$query= self::$pdo->query("DELETE product,image from product left join image on product.id = image.parentId where product.id = '{$id}'");
 	}
-
+	/*
+		Get product follow id or name
+	*/
 	public function getId($id='',$name=''){
 		$query= self::$pdo->query("SELECT *,product.id from ".self::$_table." left join image on product.id=image.
 								parentId where product.id = '{$id}' or product.name = '{$name}'");
 		$array= $query->fetch(PDO::FETCH_ASSOC);
 		return $array;
 	}
-
+	/*
+		Data valid or invalid
+	*/
 	public function editValidate($data=array()) {
 		if (!empty($data['id'])) {
 			$getId= $this->getId('',$data['name']);

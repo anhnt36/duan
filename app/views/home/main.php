@@ -39,10 +39,17 @@
 
     <div class="admin">
         <div class="image">
-            <img src="<?php echo base_url.'/public/img/users/avatar.jpg'?>" class="img-polaroid"/>
+            <img src="
+            <?php 
+            if(!empty($_SESSION['avatar']))
+                echo base_url.'/public/img/'.$_SESSION['avatar'];
+            else echo base_url.'/public/img/users/avatar.jpg';
+            ?>
+
+            " class="img-polaroid"/>
         </div>
         <ul class="control">
-            <li><span class="icon-cog"></span> <a href="edit-user.html">Update Profile</a></li>
+            <li><span class="icon-cog"></span> <a href="../user/edit?id=<?php echo $_SESSION['id']; ?>">Update Profile</a></li>
             <li><span class="icon-share-alt"></span> <a href="../user/logout">Logout</a></li>
         </ul>
     </div>

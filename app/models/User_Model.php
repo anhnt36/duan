@@ -18,21 +18,21 @@ class User_Model extends FT_Model {
 		Activate and Deactivate User
 	*/
 	
-	public function is_nameUser($name) {
-		$db = self::$pdo;
-		$query= $db->query("select * from " . self::$_table . " where name = '{$name}'");
-		$count= $query->rowCount();
-		if($count>0){
-			self::$error['name']= "Username is used !Please enter a different username!";
-			return true;
-		} else {
-			return false;
-		}
-	}
+	// public function is_nameUser($name) {
+	// 	$db = self::$pdo;
+	// 	$query= $db->query("select * from " . self::$_table . " where name = '{$name}'");
+	// 	$count= $query->rowCount();
+	// 	if($count>0){
+	// 		self::$error['name']= "Username is used !Please enter a different username!";
+	// 		return true;
+	// 	} else {
+	// 		return false;
+	// 	}
+	// }
 	/*
 		Check Username and Password
 	*/
-	public function check_user($name,$pass) {
+	public function check_user($name='',$pass='') {
 		$db = self::$pdo;
 		$query= $db->query("SELECT * FROM " . self::$_table . " WHERE password = '$pass' AND name = '$name'");
 		$count= $query->rowCount();
@@ -49,7 +49,7 @@ class User_Model extends FT_Model {
 	/*
 		Check valid : username, password ,email
 	*/
-	public function name_pass($name,$pass,$email){
+	public function name_pass($name='',$pass='',$email=''){
 		$nameRule=$this->rules('username',self::$rules);
 		if(in_array('required',$nameRule)){
 			if(empty($name)){
@@ -107,10 +107,12 @@ class User_Model extends FT_Model {
 		Validate Edit
 	*/
 	public function editValidate($data=array()) {
+		$getId= $this->getId('',$data['name']);
 		if (!empty($data['id'])) {
-			$getId= $this->getId('',$data['name']);
-			if($getId) if($getId['id'] != $data['id']) {self::$error['name']= 'Username is used !Please enter a different username!';}
+			if($getId) 
+				if($getId['id'] != $data['id']) self::$error['name']= 'Username already exists !Please enter a different username!';
 		}
+		else if($getId) self::$error['name']= 'Username already exists !Please enter a different username!';
 		if(isset($data) && $data!=null){ 
 			$this->name_pass($data['name'],$data['password'],$data['email']);
 			if (!$this->fileValidate()) {self::$error['file'] = "File must have ( gif , jpeg , jpg , png ) type";}

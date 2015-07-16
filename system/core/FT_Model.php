@@ -11,6 +11,9 @@ class FT_Model{
 		'natural_number' 	=> "Field %s must be natural number !",
 		'email'				=> "Field %s must be email !"
 	);
+
+
+
 	public function __construct(){
 		self::$_table;
 		try {
@@ -19,11 +22,15 @@ class FT_Model{
 			echo 'Connect failed :'.$e->getMessage();
 		}
 	}
+
+
+
 	public function act($id,$activate) {
 		$query= self::$pdo->query("UPDATE ".self::$_table." SET activate={$activate} where id='{$id}'");
 	}
+
 	/*
-		Phân tích quy tắc và trả về mảng các quy tắc (không chứa giá trị)
+		analyze rules and return array (not value)
 	*/
 	public function rules($name){
 		$array=explode('|',self::$rules["$name"]);
@@ -33,8 +40,9 @@ class FT_Model{
 		}
 		return $array;
 	}
+
 	/*
-		Lấy giá trị của các quy tắc tương ứng
+		Get value with the corresponding rules
 	*/
 	public function xrules($name,$nameRule){
 		$array = explode('|',self::$rules["$name"]);
@@ -46,8 +54,9 @@ class FT_Model{
 		}
 		return false;
 	}
+
 	/*
-		Lấy cac loi tuong ung 
+		Get error message with the corresponding rules
 	*/
 	public function ruleMessage($name,$nameRule) {
 		if(is_null($this->xrules($name,$nameRule))) {
@@ -58,19 +67,8 @@ class FT_Model{
 		}
 	}
 
-	// public function dataValidate($rules=array()){
-	// 	$fieldRule = array_keys($rules);
-	// 	foreach ($fieldRule as $val) {
-	// 		$arrayRule = $this->rules($val);
-	// 		foreach ($rules as $key) {
-	// 			# code...
-	// 		}
-	// 		$value = $this->xrules($val,$rule);
-
-	// 	}
-	// }
 	/*
-		Tìm kiếm id và tên
+		update data into database
 	*/
 	public function update($idd,$data=array()) {
 		$array=array();
@@ -86,6 +84,9 @@ class FT_Model{
 		$query=self::$pdo->query($sql);
 	}
 
+	/*
+		insert data into database
+	*/
 	public function insert($data=array()) {
 		$array= array();
 		foreach(self::$field as $value) {
@@ -101,17 +102,24 @@ class FT_Model{
 		$query=self::$pdo->query($sql);
 	}
 
+	/*
+		Delete data from database
+	*/
 	public function delete($id) {
 		$query= self::$pdo->query("delete  from ".self::$_table." where id= '{$id}'");
 		// $query= self::$pdo->query("DELETE product,image from product inner join image on product.id = image.parentId where product.id = '{$id}'");
 		return true;
 	}
 
+	/*
+		Search follow name
+	*/
 	public function search($name,$sort='',$limit=''){
 		$db = self::$pdo;
 		$count='';
 		$name = htmlentities($name,ENT_QUOTES);
 		$query= $db->query("SELECT * FROM " . self::$_table . " WHERE name like '%$name%' or id like '%$name%' ".' '.$sort.' '. $limit);
+		
 		$count= $query->rowCount();
 		if($count>0){
 			return $query;
@@ -122,6 +130,9 @@ class FT_Model{
 		}
 	}
 
+	/*
+		Get id, name and return data array 
+	*/
 	public function getId($id='',$name=''){
 		$query= self::$pdo->query("select * from ".self::$_table." where id = '{$id}' or name = '{$name}'");
 		$array= $query->fetch(PDO::FETCH_ASSOC);
@@ -129,14 +140,15 @@ class FT_Model{
 		return $array;
 	}
 
+	/*
+		Check file valid or invalid
+	*/
 	public function fileValidate(){
 		$typeFile=array('image/gif','image/jpeg','image/jpg','image/png');
-		if(empty($_FILES['file']['tmp_name'])) return true;
-		if(is_uploaded_file($_FILES['file']['tmp_name'])) {
-			if(in_array($_FILES['file']['type'],$typeFile)) {
-				move_uploaded_file($_FILES['file']['tmp_name'], 'public/img/'.$_FILES['file']['name']);
-				return true;
-			}
+		
+		if(empty($_FILES['file']['name'])) return true;
+		if(in_array($_FILES['file']['type'],$typeFile)) {
+			return true;
 		}
 		return false;
 	}

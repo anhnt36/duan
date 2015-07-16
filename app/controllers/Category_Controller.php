@@ -8,6 +8,9 @@ class Category_Controller extends FT_Controller {
 		self::$process = '/category/show';
 		self::$object= $this->category;
 	}
+
+
+
 	public function show() {
 		$sort=''; $path='?';
 		$this->check_sort($sort,$path);
@@ -30,38 +33,27 @@ class Category_Controller extends FT_Controller {
 			}
 		}
 	}
+
 	/*
-						Edit User
+			Edit User
 	*/
+
 	public function edit() {
-		if(isset($_POST['OK'])) {
-			$data['name'] = htmlentities($_POST['name'],ENT_QUOTES);
-			$data['id']= $_GET['id'];
-			$data['activate'] = $_POST['activate'];
-			$data['updatedTime'] = date("Y-m-d H:i:s");
-			$arrayUser = $this->category->getId($data['id']);
-			$data['createdTime'] =  $arrayUser['createdTime'];
-			if($this->category->editValidate($data)){
-				$this->category->update($data['id'],$data);
-				header('Location:' . base_url . '/category/show');
-			}
-			$this->view->load('home/main',$data,'category/addCategory',$this->category->getError());
-		} else {
-			$data=$this->category->getId($_GET['id']);
-			$this->view->load('home/main',$data,'category/addCategory');
-		}
-	}
-	/*
-		Add User
-	*/
-	public function add() {
-		ob_start(); 
+		$data = array();
 		if(isset($_POST['OK'])) {
 			$data['name'] = htmlentities($_POST['name'],ENT_QUOTES);
 			$data['activate'] = $_POST['activate'];
 			$data['createdTime'] = $data['updatedTime']= date("Y-m-d H:i:s");
-			
-			if(!$this->category->is_nameCategory($data['name'])) {
+				
+			if(isset($_GET['id'])) {
+				$data['id']= $_GET['id'];
+				$arrayUser = $this->category->getId($data['id']);
+				$data['createdTime'] =  $arrayUser['createdTime'];
+				if($this->category->editValidate($data)){
+					$this->category->update($data['id'],$data);
+					header('Location:' . base_url . '/category/show');
+				}
+			} else {
 				if($this->category->editValidate($data)) {
 					$_SESSION['success'] = 'You added account successful !';
 					$this->category->insert($data) ;
@@ -70,8 +62,8 @@ class Category_Controller extends FT_Controller {
 			}
 			$this->view->load('home/main',$data,'category/addCategory',$this->category->getError());
 		} else {
-			$this->view->load('home/main',array(),'category/addCategory');
+			if(isset($_GET['id'])) $data=$this->category->getId($_GET['id']);
+			$this->view->load('home/main',$data,'category/addCategory');
 		}
-		ob_end_flush();
 	}
 }

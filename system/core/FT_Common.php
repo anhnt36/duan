@@ -5,6 +5,24 @@ function parseUrl() {
 		return $url= explode('/',(filter_var(rtrim($_GET['url'],'/'),FILTER_SANITIZE_URL)));
 	}
 }
+/*
+	automatically delete files in 'tmp' file
+*/
+function autoDeleteFile(){
+	$dir = SOURCE.'/public/img/tmp/';
+	if (is_dir($dir)) {
+		if ($dh = opendir($dir)) {
+	        while (($file = readdir($dh)) !== false) {
+	        	if(is_file($dir.$file)) {
+	        		if((time()-filectime($dir.$file)) > 86400) {
+	        			unlink($dir.$file);
+	        		}
+		        }
+	        }
+	        closedir($dh);
+	    }
+	}
+}
 
 function process() {
 	$arrayUrl = parseUrl();
@@ -15,6 +33,7 @@ function process() {
 	}
 	$controller = ucfirst(strtolower($controller)).'_Controller';
 	$action = strtolower($action);
+	if($action=='add') $action='edit';
 
 	if(!file_exists(PATH_APPLICATION.'/controllers/'.$controller.'.php')) {
 		die('Controller not found !!!');
@@ -29,26 +48,20 @@ function process() {
 		die('Action not found !!!');
 	}
 	$controllerObject->{$action}();
-	// var_dump($controllerObject->{$action}());
 }
-
+/*
+	Load Url
+*/
 function FT_load() {
 	$config = require_once PATH_APPLICATION.'/config/init.php';
-
+	autoDeleteFile();
 	session_start();
 	$arrayUrl = parseUrl();
 
 	if(isset($_COOKIE['name'])){
 		$_SESSION['name']= $_COOKIE['name'];
 	}
-	if(!isset($_SESSION['_id'])){
-		$_SESSION['_id']= 'ASC';
-		
-	}
-	if (!isset($_SESSION['_name'])) {
-		$_SESSION['_name']= 'ASC';
-	}
-
+	
 	if(isset($_SESSION['name'])) {
 		process();
 	} else {

@@ -59,21 +59,26 @@
                     <h1>Users Management</h1>
                     <div class="clear"></div>
                 </div>
+                <?php
+                    $this->helper = new FT_Helper_Loader;
+                    $this->helper->load('String');
+                ?>
+
                 <div class="block-fluid table-sorting">
                     <a href="../user/add" class="btn btn-add">Add User</a>
                     <p style="color:red" align="center"><?php if(isset($_SESSION['success'])){echo $_SESSION['success']; unset($_SESSION['success']);} ?></p>
                     <p style="color:red" align="center"><?php if(isset($_SESSION['activate'])){echo $_SESSION['activate']; unset($_SESSION['activate']);} ?></p>
-                        
+                    <p style="color:red" align="center"><?php if(isset($_SESSION['error'])){echo $_SESSION['error']; unset($_SESSION['error']);} ?></p>   
                     <form method="POST" action="../user/process">
                     <table cellpadding="0" cellspacing="0" width="100%" class="table" id="tSortable_2">
                         <thead>
                         <tr>
                             <th><input type="checkbox" id="selectAll" /></th>
-                            <th width="15%" class="sorting"><a href="../user/show?<?php if(isset($_GET['search'])){echo 'context='.$_GET['context'].'&search='.$_GET['search'].'&';} ?>s=id<?php if(isset($_GET['type'])){if($_GET['type']=='DESC'){echo '&type=ASC';}else{echo '&type=DESC';}}else{echo '&type=DESC';}if(isset($_GET['page'])){echo '&page='.$_GET['page'];} ?>">ID</a></th>
-                            <th width="35%" class="sorting"><a href="../user/show?<?php if(isset($_GET['search'])){echo 'context='.$_GET['context'].'&search='.$_GET['search'].'&';} ?>s=name<?php if(isset($_GET['type'])){if($_GET['type']=='DESC'){echo '&type=ASC';}else{echo '&type=DESC';}}else{echo '&type=DESC';}if(isset($_GET['page'])){echo '&page='.$_GET['page'];} ?>">Username</a></th>
-                            <th width="20%" class="sorting"><a href="#">Activate</a></th>
-                            <th width="10%" class="sorting"><a href="#">Time Created</a></th>
-                            <th width="10%" class="sorting"><a href="#">Time Updated</a></th>
+                            <th width="15%" class="sorting"><a href="../user/show?<?php path('id'); ?>">ID</a></th>
+                            <th width="35%" class="sorting"><a href="../user/show?<?php path('name'); ?>">Username</a></th>
+                            <th width="20%" class="sorting"><a href="../user/show?<?php path('activate'); ?>">Activate</a></th>
+                            <th width="10%" class="sorting"><a href="../user/show?<?php path('createdTime'); ?>">Time Created</a></th>
+                            <th width="10%" class="sorting"><a href="../user/show?<?php path('updatedTime'); ?>">Time Updated</a></th>
                             <th width="10%">Action</th>
                         </tr>
                         </thead>

@@ -1,3 +1,12 @@
+    
+    <div class="breadLine">
+
+        <ul class="breadcrumb">
+            <li><a href="list-categories.html">List Users</a> <span class="divider">></span></li>
+            <li class="active">Add</li>
+        </ul>
+
+    </div>
     <div class="workplace">
         <div class="row-fluid">
 

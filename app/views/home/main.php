@@ -9,6 +9,7 @@
     <link rel="icon" type="image/ico" href="<?php echo base_url.'/public/favicon.ico'?>"/>
 
     <link href="<?php echo base_url.'/public/css/stylesheets.css' ?>" rel="stylesheet" type="text/css"/>
+
     <script type="text/javascript">
         function logOut(){
             confirm('Bạn có muốn đăng xuất không ?');
@@ -36,10 +37,6 @@
             ?>
         </div>
     </div>
-    <?php
-            // echo base_url.'/public/img/users/avatar.jpg';
-            // echo base_url.'/public/img/'.$_SESSION['avatar'];
-        ?>
     <div class="admin">
         <div class="image">
         
@@ -49,6 +46,7 @@
             
             if(!empty($_SESSION['avatar'])) echo base_url.'/public/img/'.$_SESSION['avatar'];
             else echo base_url.'/public/img/users/avatar.jpg';
+            
             ?>
 
             " class="img-polaroid"/>

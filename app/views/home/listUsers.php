@@ -97,7 +97,7 @@
                                     echo "
                                         <tr>
                                             <td><input class='chkbox' type='checkbox' name='c[]' value='{$row['id']}'/></td>
-                                            <td>{$row['id']}</td>
+                                            <td><a  href='../user/edit?id={$row['id']}'>{$row['id']}</a></td>
                                             <td>{$row['name']}</td>
                                             <td><span class='text-success'>{$row['activate']}</span></td>
                                             <td>{$row['createdTime']}</td>

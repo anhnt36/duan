@@ -58,7 +58,14 @@
                         </div> 
                     	<div class="row-form">
                             <div class="span3">Upload Image:</div>
-                            <div class="span6"><input type="file" size="19" name= 'file'><?php if (isset($data['image']) && $data['image']!='' && !isset($error['file'])) {echo "<img src='".base_url.'/public/img/'.$data['image']."'  height='90' width='90'/>";} ?></div><br />
+                            <div class="span6"><input type="file" size="19" name= 'file'>
+                            <?php 
+                            if (isset($data['image']) && $data['image']!='' && !isset($error['file'])) {
+                                echo "<img src='".base_url.'/public/img/'.$data['image']."'  height='90' width='90'/>";
+                                echo "<input type='hidden' name= 'fileImage' value='{$data['image']}'>";
+                            } 
+                            ?>
+                            </div><br />
                             <?php if (isset($data['image']) && $data['image']!='' && !isset($error['file'])){
                                 echo"<div>Are you delete this image?</div>
                                     <div><input type='checkbox' name='img' value='1'></div>";

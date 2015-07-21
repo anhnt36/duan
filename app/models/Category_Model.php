@@ -4,13 +4,14 @@ class Category_Model extends FT_Model {
 	public function getError(){
 		return self::$error;
 	}
+
 	public function __construct() {
 		parent::__construct();
 		self::$_table = 'category';
 		self::$rules = array(
 			'CategoryName' => 	'required'
 		);
-		self::$field = array('name','activate','createdTime','updatedTime');
+		self::$field = array('name', 'activate', 'createdTime', 'updatedTime');
 	}
 	/*
 		Activate and Deactivate User
@@ -28,25 +29,18 @@ class Category_Model extends FT_Model {
 		}
 	}
 	/*
-		Return all user
-	*/
-	public function getAllCategory($limit='',$sort='') {
-		$dbh = self::$pdo->query("SELECT * FROM " . self::$_table.' '.$sort.' '. $limit);
-		return $dbh;
-	}
-	/*
 		Check valid : username, password ,email
 	*/
 	public function nameValidate($name) {
-		$nameRule = $this->rules('CategoryName',self::$rules);
-		if(in_array('required',$nameRule)){
+		$nameRule = $this->rules('CategoryName', self::$rules);
+		if(in_array('required', $nameRule)){
 			if(empty($name)) {
-				self::$error['name'] = $this->ruleMessage('CategoryName','required');
+				self::$error['name'] = $this->ruleMessage('CategoryName', 'required');
 			}
 			else{
 				if(in_array('min', $nameRule)) {
-					if(strlen($name) < $this->xrules('CategoryName','min',self::$rules)) {
-						self::$error['name'] = $this->ruleMessage('CategoryName','min');
+					if(strlen($name) < $this->xrules('CategoryName', 'min', self::$rules)) {
+						self::$error['name'] = $this->ruleMessage('CategoryName', 'min');
 					}
 				}
 			}
@@ -55,22 +49,27 @@ class Category_Model extends FT_Model {
 	/*
 		Validate Edit
 	*/
-	public function editValidate($data=array()) {
-		if (!empty($data['id'])) {
-			$getId = $this->getId('',$data['name']);
-			if($getId) 
-				if($getId['id'] != $data['id']) 
-					self::$error['name'] = 'CategoryName already exists!Please enter a different Categoryname!';
+	public function editValidate($data = array()) {
+		$getCategory= $this->getId('', $data['name']);
+		//check category exists
+		if ($getCategory) {
+			if(!empty($data['id'])) { 		// Case : Edit User
+				if($getCategory['id'] != $data['id']) {
+					self::$error['name'] = 'CategoryName already exists !Please enter a different CategoryName!';
+				}
+			} else {		// Case : Add User
+				self::$error['name'] = 'CategoryName already exists !Please enter a different CategoryName!';
+			}
 		}
+
 		if(isset($data) && $data!=null){ 
 			$this->nameValidate($data['name']);
 			if(isset(self::$error['name'])) {
 				if(!empty(self::$error['name'])) {
 					return false;
 				}
-				else return true;
 			}
-			else return true;
+			return true;
 		} 
 	}
 }

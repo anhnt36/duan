@@ -1,25 +1,24 @@
 <?php
 define('PATH_SYSTEM',__DIR__.'/system');
 define('PATH_APPLICATION',__DIR__.'/app');
-define('SOURCE',__DIR__);
 
-_autoload();
-$controller1= new FT_Controller();
+require_once PATH_SYSTEM . '/config/config.php';
+require_once PATH_SYSTEM . '/core/FT_Common.php';
 
+function __autoload($class) {
+    $arrayPath = array(
+        PATH_SYSTEM . '/core/',
+        PATH_SYSTEM . '/core/loader/'
+    );
 
-
-function _autoload(){
-	require_once PATH_SYSTEM.'/config/config.php';
-	require_once PATH_SYSTEM .'/core/FT_Common.php';
-	require_once PATH_SYSTEM .'/core/FT_Controller.php';
-	require_once PATH_SYSTEM .'/core/FT_Model.php';
-	require_once PATH_SYSTEM.'/core/loader/FT_Config_Loader.php';
-	require_once PATH_SYSTEM.'/core/loader/FT_Helper_Loader.php';
-	require_once PATH_SYSTEM.'/core/loader/FT_Library_Loader.php';
-	require_once PATH_SYSTEM.'/core/loader/FT_View_Loader.php';
-	require_once PATH_SYSTEM.'/core/loader/FT_Model_Loader.php';
-	require_once PATH_SYSTEM.'/core/loader/FT_Controller_Loader.php';
+    foreach ($arrayPath as $path) {
+        if(file_exists($path . "{$class}.php")) {
+            require_once $path . "{$class}.php";
+        }
+    }
 }
 
+$controller1 = new FT_Controller();
 
+session_start();
 FT_load();

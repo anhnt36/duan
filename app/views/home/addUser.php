@@ -36,12 +36,19 @@
                             <div class="span3">Password:</div>
                             <div class="span9"><input type="password" value="<?php if(isset($data['pass'])) {echo $data['pass'];} ?>" name='pass'/></div>
                             <div class="span3"></div>
-                            <p style="color:red"><?php if(isset($error['pass'])) {echo '* '.$error['pass'];} ?></p>
+                            <p style="color:red"><?php if(isset($error['password'])) {echo '* '.$error['password'];} ?></p>
                             <div class="clear"></div>
                         </div> 
                         <div class="row-form">
                             <div class="span3">Upload Avatar:</div>
-                            <div class="span6"><input type="file" size="19" name= 'file'><?php if (isset($data['avatar']) && $data['avatar']!='' && !isset($error['file'])) {echo "<img src='".base_url.'/public/img/'.$data['avatar']."'  height='90' width='90'/>";}?></div><br />
+                            <div class="span6"><input type="file" size="19" name= 'file'><input type="hidden" name= 'file' value="">
+                            <?php 
+                            if ( !empty($data['avatar']) && !isset($error['file']) ) {
+                                echo "<img src='".base_url.'/public/img/'.$data['avatar']."'  height='90' width='90'/>";
+                                echo "<input type='hidden' name= 'fileImage' value='{$data['avatar']}'>";
+                            }
+                            ?>
+                            </div><br />
                             <?php if (isset($data['avatar']) && $data['avatar']!='' && !isset($error['file'])){
                                 echo"<div>Are you delete this image?</div>
                                     <div><input type='checkbox' name='img' value='1'></div>";

@@ -92,7 +92,7 @@
                             }
                             echo "    <tr>
                                     <td><input type='checkbox' class='chkbox' name='c[]' value='{$row['id']}'/></td>
-                                    <td>{$row['id']}</td>
+                                    <td><a href='../product/edit?id={$row['id']}'>{$row['id']}</a></td>
                                     <td>{$row['name']}</td>
                                     <td>".number_format($row['price'],0,',','.')." VND</td>
                                     <td><span class='text-success'>{$row['activate']}</span></td>

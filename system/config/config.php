@@ -6,5 +6,7 @@ define('DB_PASSWORD',   '');
 define('DB_DATABASE',   'projectadmin');
 define('base_url' ,'http://localhost/duan');
 define('PERPAGE' ,5);
+define('SOURCE',__DIR__);
+
 // Thông số controller và action mặc định
 

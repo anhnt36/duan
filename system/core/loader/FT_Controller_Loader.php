@@ -8,6 +8,6 @@ class FT_Controller_Loader{
 		if(!file_exists(PATH_APPLICATION . '/controllers/' . $controller . '_Controller.php')) {
 			die('Controller not found !!!');
 		}
-		require_once PATH_APPLICATION . '/controllers/'.$controller.'_Controller.php';
+		require_once PATH_APPLICATION . '/controllers/' . $controller . '_Controller.php';
 	}
 }

@@ -2,9 +2,9 @@
 class Product_Controller extends FT_Controller {
 
 	public function __construct() {
-		FT_Controller::__construct();
+		parent::__construct();
 		$this->model->load('Product');
-		$this->product= new Product_Model();
+		$this->product = new Product_Model();
 		self::$process = '/product/show';
 		self::$object= $this->product;
 	}

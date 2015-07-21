@@ -171,7 +171,9 @@ class FT_Controller {
 
 			if($_FILES['file']['name'] == '') { 
 				if(!empty($fileImage)) {
-					unlink('public/img/'.$fileImage);
+					if(file_exists('public/img/'.$fileImage)) {
+						unlink('public/img/'.$fileImage);
+					}
 				}
 				$data = '';
 			}

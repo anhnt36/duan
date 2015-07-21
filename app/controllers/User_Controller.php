@@ -3,11 +3,11 @@ class User_Controller extends FT_Controller {
 	public $user;
 
 	public function __construct() {
-		FT_Controller::__construct();
+		parent::__construct();
 		$this->model->load('User');
 		$this->user = new User_Model;
 		self::$process = '/user/show';
-		self::$object= $this->user;
+		self::$object = $this->user;
 	}
 
 	/*
@@ -15,7 +15,7 @@ class User_Controller extends FT_Controller {
 	*/
 
 	public function login() {
-		if(isset($_POST['OK'])){
+		if(isset($_POST['OK'])) {
 			$data['name'] = trim($_POST['nameUser']);
 			$data['password'] = trim($_POST['password']);
 

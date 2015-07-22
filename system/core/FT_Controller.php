@@ -16,6 +16,7 @@ class FT_Controller {
 		$this->model = new FT_Model_Loader;
 
 		$this->library = new FT_Library_Loader;
+		$this->library->load('validate');
 
 		$this->helper = new FT_Helper_Loader;
 
@@ -128,33 +129,45 @@ class FT_Controller {
 	*/
 
 	protected function encodeImage(){																							
-		$time = md5(date("Y-m-d H:i:s"));
-		$md5 = md5($_FILES['file']['name']) . md5($time).'.'.substr($_FILES['file']['type'], 6);
-		return $md5;
+		if($_FILES['file']['name'] != '') {
+			$time = md5(date("Y-m-d H:i:s"));
+			$md5 = md5($_FILES['file']['name']) . $time . '.' . substr($_FILES['file']['type'], 6);
+			return $md5;
+		} else {
+			return NULL;
+		}
+		
 	}
 
 	/*
 		Handling file
 	*/
-	protected function handlingFile(&$data , $oldImage , $action = 'edit' , $file='' ,$fileImage = '') {						
+
+	protected function handlingFile(&$data , $oldImage , $action = 'edit' , $file='' ,&$fileImage ) {						
+
+		if (!empty($_POST['fileImage'])) {
+			$fileImage = $_POST['fileImage'];
+		}
 		if($_FILES['file']['name'] == '') {
-			
+
 			if($action == 'edit') {
-				
-				if(empty($fileImage)) 
+
+				if(empty($fileImage)) {
 					$data = $oldImage;
+				}
 				else {
 					$data = $fileImage;
 				}
 			} else {
-				
+
 				if(!empty($fileImage)) {
 					$data = $fileImage;
 				} else {
-					$data='';
+					$data = NULL;
 				}
 			}
 		} else {
+
 			if(!empty($fileImage)) {
 				if (strlen(strstr($fileImage,'tmp/'))) {
 					if(file_exists('public/img/' . $fileImage)) {
@@ -167,22 +180,13 @@ class FT_Controller {
 				move_uploaded_file($_FILES['file']['tmp_name'], 'public/img/' . $data);
 			}
 		}
-		if(isset($_POST['img']) && $_POST['img'] == '1') {
-
-			if($_FILES['file']['name'] == '') { 
-				if(!empty($fileImage)) {
-					if(file_exists('public/img/'.$fileImage)) {
-						unlink('public/img/'.$fileImage);
-					}
-				}
-				$data = '';
-			}
-		}
 	}
+
 	/*
 		Show Object
 	*/
-	public function showObject($object ,$linkShow,$linkList) {																		
+
+	protected function showObject($object ,$linkShow,$linkList) {																		
 		$sort = '';
 		$path = '?';
 		$this->check_sort($sort,$path);
@@ -217,36 +221,32 @@ class FT_Controller {
 	protected function dataInputForm() {																							
 		$data = array();
 		$data['name'] = htmlentities(trim($_POST['name']),ENT_QUOTES);
-
-		if(isset($_POST['email'])) {
-			$data['password'] = trim($_POST['pass']);
-			$data['email'] = $_POST['email'];
-			$data['avatar'] = $this->encodeImage();
-		}
-
 		$data['activate'] = $_POST['activate'];
 		$data['createdTime'] = $data['updatedTime']= date("Y-m-d H:i:s");
-
-		if(isset($_POST['price'])) {
-			$data['description'] = $_POST['description'];
-			$data['price'] = $_POST['price'];
-			$data['image'] = $this->encodeImage();
-		}
-		
 		return $data;
 	}
-
 
 	/*
 		Delete file in folder 'tmp' and the old image file in folder image
 	*/
 
-	protected function deleteFile(&$image , $oldImage , $action) {																	
+	protected function deleteFile(&$image , $oldImage , $action, $fileImage) {																	
+		if(isset($_POST['img']) && $_POST['img'] == '1') {
+			if($fileImage != '') {
+				if($_FILES['file']['name'] == '') {
+					if(file_exists('public/img/'.$fileImage)) {
+						unlink('public/img/'.$fileImage);
+						$image = NULL;
+					}
+				}
+			}
+		}
+
 		if (strlen(strstr($image , 'tmp/'))) {
 			$image = substr($image, 4);
 			copy('public/img/tmp/' . $image , 'public/img/' . $image);
 			unlink('public/img/tmp/' . $image);
-		}
+		} else $image == NULL;
 
 		if($action == 'edit') {
 			if($oldImage != '' && $image != $oldImage) {

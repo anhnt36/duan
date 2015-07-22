@@ -1,6 +1,5 @@
 <?php
 class User_Controller extends FT_Controller {
-	public $user;
 
 	public function __construct() {
 		parent::__construct();
@@ -8,6 +7,7 @@ class User_Controller extends FT_Controller {
 		$this->user = new User_Model;
 		self::$process = '/user/show';
 		self::$object = $this->user;
+		$this->validate = new Validate_Library($this->user->getRules());
 	}
 
 	/*
@@ -18,7 +18,7 @@ class User_Controller extends FT_Controller {
 		if(isset($_POST['OK'])) {
 			$data['name'] = trim($_POST['nameUser']);
 			$data['password'] = trim($_POST['password']);
-
+			
 			if(!$this->user->loginValidate($data['name'], $data['password'])) {
 				$this->view->load('home/login', $this->user->getError());
 			} else {
@@ -63,8 +63,9 @@ class User_Controller extends FT_Controller {
 						Edit SESSION currentUser
 	*/
 
-	public function currentAccount($data=array()){
+	private function currentAccount($data=array()){
 		$_SESSION['success'] = 'You edited account successful !';
+		unset($_SESSION['oldAvatar']);
 		
 		if($_SESSION['id'] == $data['id']) {
 			$_SESSION['name'] = $data['name'];
@@ -85,26 +86,24 @@ class User_Controller extends FT_Controller {
 	*/
 
 	public function edit() {
+		ob_start();
+		//$_SESSION['oldAvatar'] = 1;
 		$data = array();
 		//if id don't exist
 		if(isset($_GET['id'])) {
 			if(!$this->user->getId($_GET['id'])) {
-				header("Location:".base_url.'/user/error404');
+				header("Location:" . base_url . '/user/error404');
 			}
 		}
 		// 	When enter submit add/edit
 		if(isset($_POST['OK'])) { 
-			$data = $this->dataInputForm();
+			$data = $this->formatData();
 
 			$data['id'] = $_GET['id'];
 			$arrayUser = $this->user->getId($data['id']);
-			$data['createdTime'] =  $arrayUser['createdTime'];
-
-			// file hidden
+			$data['createdTime'] = $arrayUser['createdTime'];
 			$data['fileImage'] = '';
-			if (!empty($_POST['fileImage'])) {
-				$data['fileImage'] = $_POST['fileImage'];
-			}
+
 			// In the case,if user don't enter password ,I will get the old password
 			if(empty($_POST['pass'])) {
 				$data['password'] = $arrayUser['password']; 				//Not have to insert password
@@ -115,11 +114,10 @@ class User_Controller extends FT_Controller {
 			/*
 				Handling file if available
 			*/
-			$this->handlingFile($data['avatar'], $arrayUser['avatar'], 'edit', $this->user->fileValidate(), $data['fileImage']);
-
+			$this->handlingFile($data['avatar'], $arrayUser['avatar'], 'edit', $this->validate->fileValidate(), $data['fileImage']);
+			// if($data['avatar'] == NULL) 
 			if($this->user->editValidate($data)) {		//check data valid or invalid
-				$this->deleteFile($data['avatar'], $arrayUser['avatar'], 'edit');
-
+				$this->deleteFile($data['avatar'], $arrayUser['avatar'], 'edit', $data['fileImage']);
 				$this->currentAccount($data);
 				$this->user->update($data['id'], $data);
 				header('Location:' . base_url . '/user/show');
@@ -127,9 +125,12 @@ class User_Controller extends FT_Controller {
 			$this->view->load('home/main', $data, 'home/addUser', $this->user->getError());
 
 		} else {		//before pressing submit
-			if(isset($_GET['id'])) $data = $this->user->getId($_GET['id']);
+			if(isset($_GET['id'])) {
+				$data = $this->user->getId($_GET['id']);
+			}
 			$this->view->load('home/main', $data, 'home/addUser');
 		}
+		ob_end_flush();
 	}
 
 	/*
@@ -138,19 +139,16 @@ class User_Controller extends FT_Controller {
 
 	public function add() {
 		if(isset($_POST['OK'])) { 
-			$data = $this->dataInputForm();
+			$data = $this->formatData();
 			/*
 				Handling file if available
 			*/
 			$data['fileImage'] = '';
-			if (!empty($_POST['fileImage'])) {
-				$data['fileImage'] = $_POST['fileImage'];
-			}
-			$this->handlingFile($data['avatar'],'','add',$this->user->fileValidate(),$data['fileImage']);
-			
-			if($this->user->editValidate($data)){
-				$this->deleteFile($data['avatar'] , '' ,'add');
 
+			$this->handlingFile($data['avatar'], '', 'add', $this->validate->fileValidate(), $data['fileImage']);
+
+			if($this->user->editValidate($data)) {
+				$this->deleteFile($data['avatar'] , NULL , 'add','');
 				$_SESSION['success'] = 'You added account successful !';
 				$this->user->insert($data) ;
 				header('Location:' . base_url . '/user/show');
@@ -168,5 +166,17 @@ class User_Controller extends FT_Controller {
 
 	public function error404() {
 		$this->view->load('home/error404');
+	}
+
+	/*
+			//Get data from form
+	*/
+
+	private function formatData() {
+		$data = $this->dataInputForm();
+		$data['password'] = trim($_POST['pass']);
+		$data['email'] = $_POST['email'];
+		$data['avatar'] = $this->encodeImage();
+		return $data;
 	}
 }

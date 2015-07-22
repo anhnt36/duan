@@ -43,13 +43,13 @@
                             <div class="span3">Upload Avatar:</div>
                             <div class="span6"><input type="file" size="19" name= 'file'><input type="hidden" name= 'file' value="">
                             <?php 
-                            if ( !empty($data['avatar']) && !isset($error['file']) ) {
+                            if ( !empty($data['avatar']) && empty($error['file'])) {
                                 echo "<img src='".base_url.'/public/img/'.$data['avatar']."'  height='90' width='90'/>";
                                 echo "<input type='hidden' name= 'fileImage' value='{$data['avatar']}'>";
                             }
                             ?>
                             </div><br />
-                            <?php if (isset($data['avatar']) && $data['avatar']!='' && !isset($error['file'])){
+                            <?php if (!empty($data['avatar']) && empty($error['file'])){
                                 echo"<div>Are you delete this image?</div>
                                     <div><input type='checkbox' name='img' value='1'></div>";
                             }

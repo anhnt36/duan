@@ -2,13 +2,14 @@
 class Category_Controller extends FT_Controller {
 	public $user;
 	public function __construct() {
-		FT_Controller::__construct();
+		parent::__construct();
 		$this->model->load('Category');
 		$this->category= new Category_Model();
 		self::$process = '/category/show';
 		self::$object= $this->category;
+		$this->validate = new Validate_Library($this->category->getRules());
 	}
-	
+																												
 	/*
 		Show data
 	*/

@@ -15,11 +15,11 @@ class FT_Config_Loader{
 		return false;
 	}
 
-	public function item($key, $defailt_val=''){
-		return isset($this->config[$key]) ? $this->config[$key] :$defailt_val;
-	}
+	// public function item($key, $defailt_val=''){
+	// 	return isset($this->config[$key]) ? $this->config[$key] :$defailt_val;
+	// }
 
-	public function set_item($key,$val){
-		$this->config[$key] = $val;
-	}
+	// public function set_item($key,$val){
+	// 	$this->config[$key] = $val;
+	// }
 }
